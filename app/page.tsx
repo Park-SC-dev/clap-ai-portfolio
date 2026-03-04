@@ -1,10 +1,15 @@
+import { fetchVideos } from "@/lib/notion";
 import VideoGrid from "@/components/VideoGrid";
 import Contact from "@/components/Contact";
 
-export default function Home() {
+export const revalidate = 3600;
+
+export default async function Home() {
+  const videos = await fetchVideos();
+
   return (
     <main>
-      <VideoGrid />
+      <VideoGrid videos={videos} />
       <Contact />
     </main>
   );

@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import videos, { Video } from "@/data/videos";
+import { Video } from "@/data/videos";
 import VideoCard from "./VideoCard";
 import VideoModal from "./VideoModal";
 import styles from "./VideoGrid.module.css";
 
-export default function VideoGrid() {
+interface VideoGridProps {
+  videos: Video[];
+}
+
+export default function VideoGrid({ videos }: VideoGridProps) {
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
   const horizontalVideos = videos.filter((v) => v.orientation === "horizontal");

@@ -3,6 +3,7 @@ export interface Video {
   type: "youtube" | "vimeo";
   videoId: string;
   orientation: "horizontal" | "vertical";
+  autoplay?: boolean;
 }
 
 const videos: Video[] = [
