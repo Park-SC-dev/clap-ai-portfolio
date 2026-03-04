@@ -19,17 +19,18 @@ function getPreviewUrl(video: Video): string {
 
 export default function VideoCard({ video, index, onClick }: VideoCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [hasAppeared, setHasAppeared] = useState(false);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
+        setInView(entry.isIntersecting);
         if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
+          setHasAppeared(true);
         }
       },
-      { threshold: 0.1 }
+      { rootMargin: "200px" }
     );
 
     if (cardRef.current) {
@@ -40,11 +41,12 @@ export default function VideoCard({ video, index, onClick }: VideoCardProps) {
   }, []);
 
   const isVertical = video.orientation === "vertical";
+  const thumbnail = `https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`;
 
   return (
     <div
       ref={cardRef}
-      className={`${styles.card} ${isVisible ? styles.visible : ""}`}
+      className={`${styles.card} ${hasAppeared ? styles.visible : ""}`}
       style={{ animationDelay: `${index * 0.1}s` }}
       onClick={onClick}
     >
@@ -52,15 +54,20 @@ export default function VideoCard({ video, index, onClick }: VideoCardProps) {
         className={styles.videoWrapper}
         style={{ paddingTop: isVertical ? "177.78%" : "56.25%" }}
       >
-        {isVisible && (
-          <iframe
-            src={getPreviewUrl(video)}
-            className={styles.iframe}
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-            loading="lazy"
-            title={video.videoId}
-          />
+        {hasAppeared && (
+          <>
+            <img src={thumbnail} alt="" className={styles.thumbnail} />
+            {inView && (
+              <iframe
+                src={getPreviewUrl(video)}
+                className={styles.iframe}
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+                loading="lazy"
+                title={video.videoId}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
